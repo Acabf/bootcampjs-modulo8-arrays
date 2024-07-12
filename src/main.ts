@@ -11,12 +11,6 @@ interface Pacientes {
   edad: number;
 }
 
-interface NumeroPacientesPorEspecialidad {
-    medicoDeFamilia: number;
-    pediatria: number;
-    cardiologia: number;
-}
-
 const pacientes: Pacientes[] = [
   {
     id: 1,
@@ -80,79 +74,67 @@ const pacientes: Pacientes[] = [
   },
 ];
 
+// Apartado 1a
 const obtenPacientesAsignadosAPediatria = (pacientes: Pacientes[]): Pacientes[] => {
-    const pacientesPediatria: Pacientes[] = [];
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].especialidad === "Pediatra") {
-        pacientesPediatria.push(pacientes[i]);
-      }
-    }
-    return pacientesPediatria;
-  };
-  
+  return pacientes.filter(paciente => paciente.especialidad === "Pediatra");
+};
+
+// Apartado 1b
 const obtenPacientesAsignadosAPediatriaYMenorDeDiezAnios = (pacientes: Pacientes[]): Pacientes[] => {
-  const pacientesPediatriaMenorDiez: Pacientes[] = [];
-  for (let i = 0; i < pacientes.length; i++) {
-    if (pacientes[i].especialidad === "Pediatra" && pacientes[i].edad < 10) {
-      pacientesPediatriaMenorDiez.push(pacientes[i]);
-    }
-  }
-  return pacientesPediatriaMenorDiez;
+  return pacientes.filter(paciente => paciente.especialidad === "Pediatra" && paciente.edad < 10);
 };
 
+// Apartado 2
 const activarProtocoloUrgencia = (pacientes: Pacientes[]): boolean => {
-    let activarProtocolo = false;
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].frecuenciaCardiaca > 100 && pacientes[i].temperatura > 39) {
-        activarProtocolo = true;
-        break;
-      }
-    }
-    return activarProtocolo;
+  return pacientes.some(paciente => paciente.frecuenciaCardiaca > 100 && paciente.temperatura > 39);
 };
 
+// Apartado 3
 const reasignaPacientesAMedicoFamilia = (pacientes: Pacientes[]): Pacientes[] => {
-    const nuevaListaPacientes: Pacientes[] = [];
-    for (let i = 0; i < pacientes.length; i++) {
-      const paciente = { ...pacientes[i] }; // Hacemos una copia del paciente
-      if (paciente.especialidad === "Pediatra") {
-        paciente.especialidad = "Medico de familia";
-      }
-      nuevaListaPacientes.push(paciente);
+  return pacientes.map(paciente => {
+    if (paciente.especialidad === "Pediatra") {
+      return { ...paciente, especialidad: "Medico de familia" };
     }
-    return nuevaListaPacientes;
+    return paciente;
+  });
 };
 
+// Apartado 4
 const hayPacientesDePediatria = (pacientes: Pacientes[]): boolean => {
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].especialidad === "Pediatra") {
-        return true;
-      }
-    }
-    return false;
+  return pacientes.some(paciente => paciente.especialidad === "Pediatra");
 };
+
+// Apartado 5
+interface NumeroPacientesPorEspecialidad {
+  medicoDeFamilia: number;
+  pediatria: number;
+  cardiologia: number;
+}
 
 const cuentaPacientesPorEspecialidad = (pacientes: Pacientes[]): NumeroPacientesPorEspecialidad => {
-    const conteo: NumeroPacientesPorEspecialidad = {
-      medicoDeFamilia: 0,
-      pediatria: 0,
-      cardiologia: 0
-    };
-  
-    for (let i = 0; i < pacientes.length; i++) {
-      switch (pacientes[i].especialidad) {
-        case "Medico de familia":
-          conteo.medicoDeFamilia++;
-          break;
-        case "Pediatra":
-          conteo.pediatria++;
-          break;
-        case "Cardiólogo":
-          conteo.cardiologia++;
-          break;
-      }
+  const conteo = {
+    medicoDeFamilia: 0,
+    pediatria: 0,
+    cardiologia: 0,
+  };
+
+  pacientes.forEach(paciente => {
+    if (paciente.especialidad === "Medico de familia") {
+      conteo.medicoDeFamilia++;
+    } else if (paciente.especialidad === "Pediatra") {
+      conteo.pediatria++;
+    } else if (paciente.especialidad === "Cardiólogo") {
+      conteo.cardiologia++;
     }
-  
-    return conteo;
+  });
+
+  return conteo;
 };
-  
+
+// Comprobaciones
+console.log(obtenPacientesAsignadosAPediatria(pacientes));
+console.log(obtenPacientesAsignadosAPediatriaYMenorDeDiezAnios(pacientes));
+console.log(activarProtocoloUrgencia(pacientes));
+console.log(reasignaPacientesAMedicoFamilia(pacientes));
+console.log(hayPacientesDePediatria(pacientes));
+console.log(cuentaPacientesPorEspecialidad(pacientes));
